@@ -24,6 +24,9 @@ const storage = multer.diskStorage({
     }
   },
   filename: (req, file, cb) => {
+    // multipart 文件名被 busboy 按 latin1 解码，这里还原为 UTF-8，
+    // 避免中文文件名在磁盘与文件列表中显示为乱码。
+    file.originalname = Buffer.from(file.originalname, "latin1").toString("utf8");
     return cb(null, file.originalname);
   }
 })
